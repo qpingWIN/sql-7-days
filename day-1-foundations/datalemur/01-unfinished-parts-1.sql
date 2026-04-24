@@ -1,0 +1,68 @@
+-- ============================================================
+-- Problem:    Unfinished Parts
+-- Source:     DataLemur — https://datalemur.com/questions/tesla-unfinished-parts
+-- Difficulty: Easy
+-- Day:        1
+-- Date:       24/04/2026
+
+/*
+PROBLEM STATEMENT
+-----------------
+Tesla is investigating production bottlenecks and they need your help to extract the relevant data. Write a query to determine which parts have begun the assembly process but are not yet finished.
+
+Assumptions:
+
+parts_assembly table contains all parts currently in production, each at varying stages of the assembly process.
+An unfinished part is one that lacks a finish_date.
+This question is straightforward, so let's approach it with simplicity in both thinking and solution.
+
+Effective April 11th 2023, the problem statement and assumptions were updated to enhance clarity.
+
+parts_assembly Table
+Column Name	Type
+part	string
+finish_date	datetime
+assembly_step	integer
+parts_assembly Example Input
+part	finish_date	assembly_step
+battery	01/22/2022 00:00:00	1
+battery	02/22/2022 00:00:00	2
+battery	03/22/2022 00:00:00	3
+bumper	01/22/2022 00:00:00	1
+bumper	02/22/2022 00:00:00	2
+bumper		3
+bumper		4
+Example Output
+part	assembly_step
+bumper	3
+bumper	4
+Explanation
+The bumpers in step 3 and 4 are the only item that remains unfinished as it lacks a recorded finish date.
+
+The dataset you are querying against may have different input & output - this is just an example!
+*/
+
+-- ============================================================
+-- MY SOLUTION
+-- ============================================================
+SELECT part, assembly_step
+FROM parts_assembly
+WHERE finish_date IS NULL;
+
+
+-- ============================================================
+-- THOUGHT PROCESS
+/*
+-Very straightforward: we just need to filter for rows where finish_date is NULL, which indicates the part is unfinished. No joins or complex logic needed.
+-The problem statement explicitly says an unfinished part is one that lacks a finish_date, so we can directly use `WHERE finish_date IS NULL` to identify those parts.
+*/
+
+-- ============================================================
+-- WHAT I LEARNED
+-- ============================================================
+/*
+Always ask a question - What does one row in my output represent?
+
+-This problem reinforces the importance of understanding how NULL values work in SQL. A NULL value represents missing or unknown data, and it cannot be compared using standard operators like = or !=. Instead, we must use IS NULL or IS NOT NULL to check for NULL values.
+*/
+
