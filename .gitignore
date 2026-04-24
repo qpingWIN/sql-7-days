@@ -1,0 +1,18 @@
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQL scratch
+*.local.sql
+scratch/
+
+# DB files
+*.db
+*.sqlite
+*.sqlite3
