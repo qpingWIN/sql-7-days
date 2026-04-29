@@ -8,7 +8,7 @@ Each problem is solved with full reasoning — not just the query, but the thoug
 | Day | Topic | Problems | Status |
 | --- | --- | --- | --- |
 | 1 | SELECT, filtering, sorting | 8 / 8 | ✅ Complete |
-| 2 | Aggregations, GROUP BY, HAVING | 0 / 10 | ⬜ Not started |
+| 2 | Aggregations, GROUP BY, HAVING | 10 / 10 | ✅ Complete |
 | 3 | JOINs | 0 / 11 | ⬜ Not started |
 | 4 | Subqueries, CTEs, set operations | 0 / 11 | ⬜ Not started |
 | 5 | Window functions | 0 / 14 | ⬜ Not started |
