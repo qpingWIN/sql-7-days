@@ -1,4 +1,4 @@
-# Day 2 — Aggregations, GROUP BY & HAVING
+# Day 2 - Aggregations, GROUP BY & HAVING
 
 **Date:** 29/04/2026
 **Hours spent: 6

@@ -1,4 +1,4 @@
-# Day N — [Topic]
+# Day N - [Topic]
 
 **Date:**
 **Hours spent:**

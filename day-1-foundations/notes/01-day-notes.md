@@ -1,4 +1,4 @@
-# Day 1 — SELECT, Filtering & Sorting
+# Day 1 - SELECT, Filtering & Sorting
 
 **Date:** 26/04/2026
 **Hours spent:** 4-5
