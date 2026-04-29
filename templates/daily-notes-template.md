@@ -27,7 +27,3 @@ A:
 | # | Problem | Source | Status | Key technique |
 | --- | --- | --- | --- | --- |
 |   |   |   |   |   |
-
-## Tomorrow
-
--

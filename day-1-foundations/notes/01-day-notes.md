@@ -1,6 +1,6 @@
 # Day 1 — SELECT, Filtering & Sorting
 
-**Date:** 24/04/2026
+**Date:** 26/04/2026
 **Hours spent:** 4-5
 **Problems solved:** 8/8
 
@@ -138,12 +138,3 @@ exactly one character.
 | 6 | Not Boring Movies | LeetCode | ✅ | Modulo, multi-condition AND |
 | 7 | Unfinished Parts | DataLemur | ✅ | IS NULL as positive filter |
 | 8 | Page With No Likes | DataLemur | ✅ | NOT IN with NULL guard |
-
-## Tomorrow
-
-- Day 2: Aggregations, GROUP BY, HAVING
-- Main mental shift: stop thinking about individual rows, start thinking
-  about groups
-- Key thing to nail: WHERE vs HAVING — WHERE runs before grouping,
-  HAVING runs after. Aggregates only exist after GROUP BY.
-- COUNT(*) vs COUNT(column) — understand the NULL difference
