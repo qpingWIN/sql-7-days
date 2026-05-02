@@ -85,6 +85,34 @@ A:
 2. `NOT EXISTS (correlated subquery)` — NULL-safe, often fastest
 3. `NOT IN (subquery)` — readable but **silently wrong if subquery contains NULLs** (returns zero rows). Avoid unless you've verified no NULLs.
 
+
+
+## UNION reference
+
+### Rules
+1. Same column count in both queries.
+2. Compatible types in matching positions (column 1 stacks on column 1, etc.).
+3. Output column names come from the **first** query.
+4. `ORDER BY` only at the end — applies to the combined result.
+5. `UNION` deduplicates; `UNION ALL` keeps duplicates.
+
+### Performance
+- `UNION` runs an implicit dedup pass (sort/hash) → slower.
+- `UNION ALL` just concatenates → faster.
+- **Default to `UNION ALL`** unless dedup is genuinely needed.
+
+### When to use
+- Combining parallel sources (`employees_us` + `employees_eu`).
+- Simulating `FULL OUTER JOIN` in MySQL (`LEFT JOIN ... UNION ... RIGHT JOIN ...`) — use plain `UNION` to dedup matched rows.
+- Building labeled feeds from multiple tables (add a literal `'order'` / `'review'` column to mark origin).
+- Unpivoting a wide table into a tall format.
+
+### Traps
+- `UNION` instead of `UNION ALL` → silent slowdown, may lose legitimate duplicates.
+- Mismatched column **order** (same types, wrong meaning) → no error, garbage output.
+- `ORDER BY` placed in subqueries → ignored or errors depending on dialect.
+- Confusing UNION with JOIN — different shapes entirely.
+
 ## Problems
 
 | # | Problem | Source | Status | Key technique |
