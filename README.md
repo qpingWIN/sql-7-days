@@ -9,7 +9,7 @@ Each problem is solved with full reasoning — not just the query, but the thoug
 | --- | --- | --- | --- |
 | 1 | SELECT, filtering, sorting | 8 / 8 | ✅ Complete |
 | 2 | Aggregations, GROUP BY, HAVING | 10 / 10 | ✅ Complete |
-| 3 | JOINs | 0 / 11 | ⬜ Not started |
+| 3 | JOINs | 11 / 11 | ✅ Complete |
 | 4 | Subqueries, CTEs, set operations | 0 / 11 | ⬜ Not started |
 | 5 | Window functions | 0 / 14 | ⬜ Not started |
 | 6 | Dates, strings, CASE, NULL handling | 0 / 9 | ⬜ Not started |
@@ -19,9 +19,9 @@ Each problem is solved with full reasoning — not just the query, but the thoug
 
 Each day has its own folder containing:
 
-- `leetcode/` — LeetCode solutions
-- `datalemur/` — DataLemur solutions
-- `notes/` — daily write-up: concepts studied, key insights, gotchas, theory Q&A
+* `leetcode/` — LeetCode solutions
+* `datalemur/` — DataLemur solutions
+* `notes/` — daily write-up: concepts studied, key insights, gotchas, theory Q&A
 
 ## Key concepts so far
 
@@ -32,6 +32,22 @@ Each day has its own folder containing:
 **NOT IN danger** — if the subquery contains any NULL, NOT IN returns zero rows for the entire query. Always add `WHERE col IS NOT NULL` to subqueries used with NOT IN.
 
 **Logical execution order** — FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. Explains why SELECT aliases work in ORDER BY but not in WHERE.
+
+**Joins as Venn diagrams** — every join type just specifies which unmatched rows to keep. INNER keeps only the overlap; LEFT keeps the left side's unmatched rows (NULL-padded on the right); FULL OUTER keeps both. Default to INNER; reach for LEFT only with a specific reason.
+
+**Anti-join pattern** — "find rows in A with no match in B." Three idioms: `LEFT JOIN ... WHERE right.col IS NULL`, `NOT EXISTS (correlated subquery)`, and `NOT IN` (avoid — silently breaks on NULLs). Trigger words: *never, without, missing*.
+
+**Self-join** — joining a table to itself with two aliases to compare rows within the same table. Use for hierarchies (employee/manager), sequential comparisons (today vs. yesterday), or when one fact row needs the same dimension twice (caller/receiver country lookups).
+
+**Conditional aggregation** — `SUM(CASE WHEN cond THEN 1 ELSE 0 END)` counts rows matching a condition. Multiple in one SELECT pivots filtered counts into a single wide row, single pass over the table. The right tool when you need multiple counts of the same table with different filters — joins are over-engineering for this shape.
+
+**Weighted average ≠ AVG** — when the data has a weight column (units, duration, count), use `SUM(x*w)/SUM(w)`. `AVG(x)` only fits when each row is one equal observation.
+
+**WHERE vs HAVING** — WHERE filters individual rows *before* grouping; HAVING filters groups *after* grouping. WHERE works on column values, HAVING works on aggregates. Both can coexist in one query.
+
+**Sargability** — wrapping a column in a function inside ON/WHERE prevents the database from using an index on that column. Prefer `date_col = DATE_ADD(other, INTERVAL 1 DAY)` (column naked on one side) over `DATEDIFF(date_col, other) = 1` (column wrapped in function).
+
+**Float math for percentages** — multiply by `100.0` not `100` to force float arithmetic and avoid integer-division truncation. Pair with INNER JOIN to keep the denominator honest (LEFT JOIN can dilute percentages with unclassifiable rows).
 
 ## Credit
 
