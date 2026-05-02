@@ -41,8 +41,6 @@ Each day has its own folder containing:
 
 **Conditional aggregation** — `SUM(CASE WHEN cond THEN 1 ELSE 0 END)` counts rows matching a condition. Multiple in one SELECT pivots filtered counts into a single wide row, single pass over the table. The right tool when you need multiple counts of the same table with different filters — joins are over-engineering for this shape.
 
-**Weighted average ≠ AVG** — when the data has a weight column (units, duration, count), use `SUM(x*w)/SUM(w)`. `AVG(x)` only fits when each row is one equal observation.
-
 **WHERE vs HAVING** — WHERE filters individual rows *before* grouping; HAVING filters groups *after* grouping. WHERE works on column values, HAVING works on aggregates. Both can coexist in one query.
 
 **Sargability** — wrapping a column in a function inside ON/WHERE prevents the database from using an index on that column. Prefer `date_col = DATE_ADD(other, INTERVAL 1 DAY)` (column naked on one side) over `DATEDIFF(date_col, other) = 1` (column wrapped in function).
