@@ -3,7 +3,7 @@
 -- Source:     LeetCode - https://leetcode.com/problems/second-highest-salary/description/
 -- Difficulty: Medium
 -- Day:        4
--- Date:       03/02/2026
+-- Date:       03/05/2026
 -- ============================================================
 
 /*
@@ -65,7 +65,12 @@ Output:
 -- MY SOLUTION
 -- ============================================================
 
-
+SELECT (
+    SELECT DISTINCT salary
+    FROM Employee
+    ORDER BY salary DESC
+    LIMIT 1 OFFSET 1
+) AS SecondHighestSalary;
 
 -- ============================================================
 -- THOUGHT PROCESS
