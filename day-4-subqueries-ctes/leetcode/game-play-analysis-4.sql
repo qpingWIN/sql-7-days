@@ -65,7 +65,22 @@ JOIN(
 ) AS firsts
 ON a.player_id = firsts.player_id
 
-
+-- OR THIS --
+SELECT ROUND(
+    SUM(CASE 
+        WHEN EXISTS (
+            SELECT 1 FROM Activity a2
+            WHERE a2.player_id = firsts.player_id
+              AND a2.event_date = DATE_ADD(firsts.first_log_in, INTERVAL 1 DAY)
+        ) THEN 1 ELSE 0 END
+    ) / COUNT(*),
+    2
+) AS fraction
+FROM (
+    SELECT player_id, MIN(event_date) AS first_log_in
+    FROM Activity
+    GROUP BY player_id
+) AS firsts;
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
