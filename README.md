@@ -10,7 +10,7 @@ Each problem is solved with full reasoning — not just the query, but the thoug
 | 1 | SELECT, filtering, sorting | 8 / 8 | ✅ Complete |
 | 2 | Aggregations, GROUP BY, HAVING | 10 / 10 | ✅ Complete |
 | 3 | JOINs | 11 / 11 | ✅ Complete |
-| 4 | Subqueries, CTEs, set operations | 0 / 11 | ⬜ Not started |
+| 4 | Subqueries, CTEs, set operations | 11 / 11 | ✅ Complete |
 | 5 | Window functions | 0 / 14 | ⬜ Not started |
 | 6 | Dates, strings, CASE, NULL handling | 0 / 9 | ⬜ Not started |
 | 7 | DB design, indexes, transactions, optimization | 0 / 5 | ⬜ Not started |
@@ -46,6 +46,21 @@ Each day has its own folder containing:
 **Sargability** — wrapping a column in a function inside ON/WHERE prevents the database from using an index on that column. Prefer `date_col = DATE_ADD(other, INTERVAL 1 DAY)` (column naked on one side) over `DATEDIFF(date_col, other) = 1` (column wrapped in function).
 
 **Float math for percentages** — multiply by `100.0` not `100` to force float arithmetic and avoid integer-division truncation. Pair with INNER JOIN to keep the denominator honest (LEFT JOIN can dilute percentages with unclassifiable rows).
+
+**Correlated subqueries** — the outer query iterates one row at a time. `e.departmentId` inside an inner query means "the value for the row currently being examined", not the column in the abstract. Cover the outer query: if the inner query can't run alone, it's correlated.
+
+**GROUP BY buckets, not collapses** — GROUP BY organizes rows into buckets but doesn't delete them. Aggregates run inside each bucket first, then output collapses to one row per group. Every SELECT column must be in GROUP BY or wrapped in an aggregate.
+
+**Zero rows ≠ NULL** — a scalar subquery returning no rows evaluates to NULL automatically. Use this to handle missing-answer edge cases.
+
+**CTEs are a readability upgrade** — `WITH name AS (SELECT ...)` lifts subqueries out of nesting and gives them names. Same execution as derived tables, but linear and readable. Chain multiple CTEs with commas.
+
+**Top-N-per-group template** — `DENSE_RANK() OVER (PARTITION BY group ORDER BY metric DESC)` ranks within partitions without collapsing rows.
+Wrap in a subquery, filter `WHERE rnk <= N` outside.
+
+**Integer division truncates** — `1 / 3` = `0` in MySQL. Multiply by `1.00` or `100.0` to force floating point on percentage calculations.
+
+**Conditional aggregation** — `SUM(CASE WHEN condition THEN value ELSE 0 END)` computes filtered aggregates within a GROUP BY bucket without affecting other aggregates on the same rows.
 
 ## Credit
 
