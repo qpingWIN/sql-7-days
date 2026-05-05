@@ -1,8 +1,8 @@
-# Day N - [Topic]
+# Day N - [Subqueries, CTEs and Set Operations]
 
-**Date:**
-**Hours spent:**
-**Problems solved:**
+**Date**
+**Hours spent**
+**Problems solved**
 
 ## What I studied
 
