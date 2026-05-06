@@ -80,5 +80,7 @@ No PARTITION BY needed since there's no per-group ranking justone global ranking
 -- WHAT I LEARNED
 -- ============================================================
 /*
--
-*/
+DENSE_RANK() OVER (ORDER BY col DESC) is global ranking, no partition needed when ranking across the whole table
+Three ranking functions recap: ROW_NUMBER (unique, arbitrary tie-break), RANK (ties share rank, skips next), DENSE_RANK (ties share rank, no skip). 
+'rank' needs quotes in MySQL because RANK is a reserved keyword and using it as a column alias without quotes throws a syntax error
+Window functions with no PARTITION BY treat the entire result set as one partition 
