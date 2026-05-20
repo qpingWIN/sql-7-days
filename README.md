@@ -11,7 +11,7 @@ Each problem is solved with full reasoning — not just the query, but the thoug
 | 2 | Aggregations, GROUP BY, HAVING | 10 / 10 | ✅ Complete |
 | 3 | JOINs | 11 / 11 | ✅ Complete |
 | 4 | Subqueries, CTEs, set operations | 11 / 11 | ✅ Complete |
-| 5 | Window functions | 0 / 14 | ⬜ Not started |
+| 5 | Window functions | 14 / 14 | ✅ Complete |
 | 6 | Dates, strings, CASE, NULL handling | 0 / 9 | ⬜ Not started |
 | 7 | DB design, indexes, transactions, optimization | 0 / 5 | ⬜ Not started |
 
@@ -55,12 +55,25 @@ Each day has its own folder containing:
 
 **CTEs are a readability upgrade** — `WITH name AS (SELECT ...)` lifts subqueries out of nesting and gives them names. Same execution as derived tables, but linear and readable. Chain multiple CTEs with commas.
 
-**Top-N-per-group template** — `DENSE_RANK() OVER (PARTITION BY group ORDER BY metric DESC)` ranks within partitions without collapsing rows.
-Wrap in a subquery, filter `WHERE rnk <= N` outside.
-
 **Integer division truncates** — `1 / 3` = `0` in MySQL. Multiply by `1.00` or `100.0` to force floating point on percentage calculations.
 
-**Conditional aggregation** — `SUM(CASE WHEN condition THEN value ELSE 0 END)` computes filtered aggregates within a GROUP BY bucket without affecting other aggregates on the same rows.
+**DELETE with self-join** — to remove duplicates keeping the smallest id: `DELETE p1 FROM t p1 JOIN t p2 ON p1.key = p2.key AND p1.id > p2.id`. The aliases are independent iterators; the condition flags rows that have a smaller-id sibling, so the minimum-id rows survive.
+
+**DISTINCT is row-wise** — `DISTINCT a, b` dedupes the `(a, b)` tuple, not each column. If one column is already unique (e.g. a PK), `DISTINCT` is a no-op. To pick one representative row per group, use `GROUP BY` + `MIN/MAX`, not `DISTINCT`.
+
+**Window functions vs aggregates** — windows compute across a row set but preserve every row; aggregates collapse rows. `OVER (PARTITION BY x ORDER BY y)` is the full grammar: PARTITION BY splits into independent groups, ORDER BY sequences rows within each.
+
+**Ranking trio** — `ROW_NUMBER` always unique, `RANK` leaves gaps after ties (1,1,3), `DENSE_RANK` no gaps (1,1,2). For "top N distinct values" use `DENSE_RANK`; for "exactly one row per group" use `ROW_NUMBER`.
+
+**Top-N-per-group template** — `DENSE_RANK() OVER (PARTITION BY group ORDER BY metric DESC)` in a CTE/subquery, then `WHERE rnk <= N` in the outer query. Can't filter on a window result in the same WHERE — windows run after WHERE in logical order.
+
+**LAG / LEAD for neighbour comparisons** — `LAG(col, n) OVER (ORDER BY x)` puts the previous row's value on the current row. Turns "compare to last month / detect consecutive runs / find gaps" into a single-row condition.
+
+**Running totals and moving averages** — `SUM(x) OVER (ORDER BY date)` gives a cumulative sum. Add an explicit frame `ROWS BETWEEN n PRECEDING AND CURRENT ROW` for moving windows; centered windows use `n PRECEDING AND m FOLLOWING`.
+
+**Frame clause traps** — default frame with `ORDER BY` is `RANGE UNBOUNDED PRECEDING TO CURRENT ROW`, which breaks `LAST_VALUE` (returns current row, not partition end). Fix with explicit `ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING`. Frames also truncate silently at partition edges — a "6-row moving avg" on row 1 is only a 3-row avg.
+
+**Islands trick** — for "consecutive dates / ids," compute `date - ROW_NUMBER() OVER (ORDER BY date)`. The difference is constant within each consecutive run, so you can `GROUP BY` it to find islands of length ≥ N.
 
 ## Credit
 
