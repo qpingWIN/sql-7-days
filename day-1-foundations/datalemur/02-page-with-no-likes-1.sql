@@ -48,6 +48,16 @@ WHERE page_id NOT IN (
     WHERE page_id IS NOT NULL
 );
 
+--OR THIS -- 
+
+SELECT page_id
+FROM pages
+WHERE NOT EXISTS (
+  SELECT page_id
+  FROM page_likes AS likes
+  WHERE likes.page_id = pages.page_id
+)
+order by page_id;
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
