@@ -73,4 +73,5 @@ SELECT page_id FROM page_likes gives me the liked pages, and NOT IN filters them
 DISTINCT: not strictly necessary here because NOT IN doesn't care about
 duplicates — (1, 1, 1) and (1) behave identically inside NOT IN.
 If the subquery returns any NULL page_id, NOT IN returns ZERO rows. Always add `WHERE page_id IS NOT NULL` to the subquery.
+NOT EXISTS: an alternative to NOT IN (works better with NULLS, don't need to NULL handle). It checks for the existence of rows in the subquery, and if none exist, it returns TRUE. This is often more efficient than NOT IN, especially with large datasets.
 */
