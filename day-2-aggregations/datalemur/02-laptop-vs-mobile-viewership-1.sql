@@ -47,6 +47,12 @@ SELECT
     SUM(CASE WHEN device_type = 'tablet' or device_type = 'phone' THEN 1 ELSE 0 END) AS mobile_views
 FROM viewership;
 
+-- OR THIS --
+
+SELECT 
+  COUNT(*) FILTER (WHERE device_type = 'laptop') AS laptop_views,
+  COUNT(*) FILTER (WHERE device_type IN ('tablet', 'phone'))  AS mobile_views 
+FROM viewership;
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
