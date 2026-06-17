@@ -76,7 +76,17 @@ JOIN (
 ON d.order_date = first_d.first_od and d.customer_id = first_d.customer_id
 
 
-
+--OR THIS--
+WITH first_orders AS(SELECT
+    FIRST_VALUE(order_date) OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS first_date,
+    customer_id,
+    order_date,
+    customer_pref_delivery_date
+    FROM Delivery
+)
+SELECT ROUND(100.0*SUM(CASE WHEN order_date=customer_pref_delivery_date AND
+                     order_date = first_date THEN 1 ELSE 0 END)/COUNT(DISTINCT customer_id),2) as immediate_percentage
+FROM first_orders
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
