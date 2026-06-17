@@ -72,6 +72,15 @@ SELECT (
     LIMIT 1 OFFSET 1
 ) AS SecondHighestSalary;
 
+--OR THIS--
+with ranked AS(SELECT DENSE_RANK() OVER (ORDER BY salary DESC) as rnk, 
+salary
+FROM Employee)
+SELECT MAX(salary) as SecondHighestSalary
+from ranked
+WHERE rnk=2
+
+
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
@@ -92,8 +101,8 @@ SELECT (
     ORDER BY salary DESC
     LIMIT 1 OFFSET 1
 ) AS SecondHighestSalary;
-The set-thinking version sidesteps the edge case entirely. "Max salary that's less than the overall max":
 
+The set-thinking version sidesteps the edge case entirely. "Max salary that's less than the overall max":
 SELECT MAX(salary) AS SecondHighestSalary
 FROM Employee
 WHERE salary < (SELECT MAX(salary) FROM Employee);
