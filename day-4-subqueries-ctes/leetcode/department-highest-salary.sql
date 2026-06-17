@@ -91,6 +91,17 @@ WHERE e.salary = (
     WHERE departmentId = e.departmentId
 );
 
+
+--OR THIS--
+
+WITH ranked AS (SELECT d.name as Department, e.name as Employee, e.salary as Salary, 
+       DENSE_RANK() OVER (PARTITION BY departmentId ORDER BY salary DESC) as rnk
+FROM Employee e
+JOIN Department d ON e.departmentId = d.id
+)
+SELECT Department, Employee, Salary
+FROM ranked
+WHERE rnk = 1
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
