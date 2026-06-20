@@ -89,7 +89,7 @@ WITH first_login AS (
     GROUP BY player_id
 )
 SELECT
-    ROUND(AVG(CASE WHEN a.player_id IS NOT NULL THEN 1 ELSE 0 END), 2) AS fraction
+    ROUND(AVG(CASE WHEN a.player_id IS NOT NULL THEN 1 ELSE 0 END), 2) AS fraction --clean trick to avoid calculating multiple row joins per player
 FROM first_login f
 LEFT JOIN Activity a
   ON f.player_id = a.player_id
