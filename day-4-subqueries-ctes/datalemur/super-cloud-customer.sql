@@ -60,6 +60,16 @@ HAVING COUNT(DISTINCT p.product_category) = (
   FROM products
   );
 
+--OR THIS--
+WITH temp1 AS(SELECT cc.customer_id, COUNT(DISTINCT p.product_category) as cnt
+FROM customer_contracts cc
+LEFT JOIN products p ON cc.product_id = p.product_id
+GROUP BY cc.customer_id
+)
+SELECT customer_id 
+FROM temp1
+WHERE cnt = (SELECT COUNT(DISTINCT product_category)
+             FROM products)
 
 -- ============================================================
 -- THOUGHT PROCESS
