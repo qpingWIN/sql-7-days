@@ -79,6 +79,20 @@ JOIN everything ON everything.age_bucket = age_breakdown.age_bucket
 ORDER BY age_bucket ASC
 
 
+--OR THIS--
+
+WITH total AS(SELECT ab.age_bucket,
+                     SUM(CASE WHEN a.activity_type='open' OR a.activity_type='send' THEN a.time_spent END) as total_time, 
+                     SUM(CASE WHEN a.activity_type='open' THEN a.time_spent END) as open_time,
+                     SUM(CASE WHEN a.activity_type='send' THEN a.time_spent END) as send_time
+              FROM activities a 
+              LEFT JOIN age_breakdown ab ON a.user_id = ab.user_id
+              GROUP BY ab.age_bucket
+)
+SELECT age_bucket, ROUND(100.0*send_time/total_time,2) AS send_perc,
+       ROUND(100.0*open_time/total_time,2) as open_perc
+FROM total
+
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
