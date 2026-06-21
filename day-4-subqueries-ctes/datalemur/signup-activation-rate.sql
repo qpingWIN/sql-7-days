@@ -81,6 +81,15 @@ SELECT ROUND(1.00*COUNT(email_id)/
 FROM texts
 WHERE signup_action ='Confirmed'
 
+--OR THIS--
+
+SELECT 
+  ROUND(1.0*COUNT(texts.email_id)
+    /COUNT(DISTINCT emails.email_id),2) AS activation_rate
+FROM emails
+LEFT JOIN texts
+  ON emails.email_id = texts.email_id
+  AND texts.signup_action = 'Confirmed'; 
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
