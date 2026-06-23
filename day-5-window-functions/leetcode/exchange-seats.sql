@@ -96,6 +96,19 @@ SELECT id, CASE WHEN id % 2 = 1 AND id != max_id THEN next
             END as student
 FROM combined
 ORDER BY id;
+
+--OR ThIS--
+
+WITH tbl AS (SELECT id, student, 
+CASE WHEN id % 2 = 0 THEN id-1
+     WHEN id =(SELECT max(id) FROM seat) AND id % 2 != 0 THEN id
+     ELSE id+1 
+     END as new_seat
+FROM Seat
+)
+SELECT new_seat AS id, student
+FROM tbl 
+ORDER BY new_seat;
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
