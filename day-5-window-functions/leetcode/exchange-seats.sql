@@ -80,6 +80,22 @@ SELECT id,
 FROM swapped
 ORDER BY id;
 
+--OR THIS--
+WITH combined AS (
+    SELECT id,
+           student,
+           LAG(student) OVER (ORDER BY id) as prev,
+           LEAD(student) OVER (ORDER BY id) as next,
+           MAX(id) OVER () as max_id
+    FROM Seat
+)
+
+SELECT id, CASE WHEN id % 2 = 1 AND id != max_id THEN next
+                WHEN id % 2 = 0 THEN prev
+                WHEN id % 2 =1 AND id = max_id THEN student
+            END as student
+FROM combined
+ORDER BY id;
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
