@@ -66,6 +66,27 @@ GROUP BY t.id
 ORDER BY num DESC
 LIMIT 1;
 
+--OR THIS--
+WITH tbl1 AS(
+    SELECT requester_id as id, COUNT(*) as r_count
+    FROM RequestAccepted
+    GROUP BY requester_id
+),
+tbl2 AS(
+    SELECT accepter_id as id, COUNT(*) as a_count
+    FROM RequestAccepted
+    GROUP BY accepter_id
+)
+SELECT
+    COALESCE(tbl1.id, tbl2.id) AS id,
+    COALESCE(r_count, 0) + COALESCE(a_count, 0) AS num
+FROM tbl1
+FULL OUTER JOIN tbl2
+    ON tbl1.id = tbl2.id
+ORDER BY num DESC
+LIMIT 1;
+
+
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
