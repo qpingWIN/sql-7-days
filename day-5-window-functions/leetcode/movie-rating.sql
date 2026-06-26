@@ -129,7 +129,27 @@ LIMIT 1)
 ) t
 ORDER BY sort_key;
 
-
+--OR THIS--
+WITH r1 AS(
+    SELECT mr.user_id, COUNT(mr.movie_id), u.name
+    FROM MovieRating mr
+    LEFT JOIN Users u ON u.user_id = mr.user_id
+    GROUP BY mr.user_id 
+    ORDER BY COUNT(mr.movie_id) DESC, u.name
+    LIMIT 1
+),
+r2 AS (
+    SELECT mr.movie_id, AVG(mr.rating), m.title
+    FROM MovieRating mr
+    LEFT JOIN Movies m ON m.movie_id = mr.movie_id
+    WHERE EXTRACT(YEAR FROM mr.created_at) = 2020 AND EXTRACT(MONTH FROM mr.created_at) = 2
+    GROUP BY mr.movie_id 
+    ORDER BY AVG(mr.rating) DESC, m.title
+    LIMIT 1
+)
+SELECT name as results FROM r1
+UNION ALL
+SELECT title FROM r2
 
 -- ============================================================
 -- THOUGHT PROCESS
