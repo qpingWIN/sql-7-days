@@ -60,6 +60,16 @@ JOIN urd ON urd.user_id = user_transactions.user_id
 GROUP BY urd.user_id, urd.recent_date
 ORDER BY urd.recent_date;
 
+--OR THIS--
+WITH tbl AS (SELECT user_id, transaction_date, 
+RANK() OVER (PARTITION BY user_id ORDER BY transaction_date DESC) AS rnk,
+product_id
+FROM user_transactions)
+SELECT transaction_date, user_id, count(product_id) AS purchase_count
+FROM tbl 
+WHERE rnk=1 
+GROUP BY transaction_date, user_id
+ORDER BY transaction_date
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
