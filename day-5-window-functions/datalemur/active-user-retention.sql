@@ -53,6 +53,18 @@ FROM active_users_june
 JOIN active_users_july ON active_users_june.user_id = active_users_july.user_id
 GROUP BY active_users_july.month_h
 
+--OR THIS--
+SELECT
+    7 AS month,
+    COUNT(DISTINCT ua1.user_id) AS monthly_active_users
+FROM user_actions ua1
+WHERE EXTRACT(MONTH FROM ua1.event_date) = 7
+  AND EXISTS (
+      SELECT 1
+      FROM user_actions ua2
+      WHERE ua2.user_id = ua1.user_id
+        AND EXTRACT(MONTH FROM ua2.event_date) = 6
+  );
 
 -- ============================================================
 -- THOUGHT PROCESS
