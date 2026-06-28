@@ -54,6 +54,27 @@ WHERE rnk=1
 GROUP BY card_name,issued_amount
 ORDER BY issued_amount DESC
 
+--OR THIS--
+
+WITH ranked AS (SELECT card_name, issued_amount,
+                ROW_NUMBER() OVER (PARTITION BY card_name ORDER BY issue_year, issue_month) AS rnk
+                FROM monthly_cards_issued
+)
+SELECT card_name, issued_amount
+FROM ranked
+WHERE rnk = 1
+ORDER BY issued_amount DESC
+
+--OR THIS--
+
+WITH ranked AS (SELECT card_name,
+                FIRST_VALUE(issued_amount) OVER (PARTITION BY card_name ORDER BY issue_year, issue_month) AS first_amount
+                FROM monthly_cards_issued
+)
+SELECT card_name, MAX(first_amount) as issued_amount
+FROM ranked
+GROUP BY card_name
+ORDER BY issued_amount DESC
 
 -- ============================================================
 -- THOUGHT PROCESS
