@@ -58,7 +58,19 @@ SELECT measurement_day,
 FROM table_day_rank
 GROUP BY measurement_day
 ORDER BY measurement_day
-       
+
+--OR THIS--
+
+WITH ranked AS(
+    SELECT measurement_value, DATE(measurement_time) as measurement_day,
+           ROW_NUMBER() OVER (PARTITION BY DATE(measurement_time) ORDER BY measurement_time) AS rnk
+    FROM measurements
+)
+SELECT measurement_day, SUM(CASE WHEN rnk % 2 = 1 THEN measurement_value ELSE 0 END) AS odd_sum,
+       SUM(CASE WHEN rnk % 2 = 0 THEN measurement_value ELSE 0 END) as even_sum
+FROM ranked
+GROUP BY measurement_day
+ORDER BY measurement_day;
 
 -- ============================================================
 -- THOUGHT PROCESS
