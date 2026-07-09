@@ -68,6 +68,24 @@ DELETE p1
 FROM Person p1
 JOIN Person p2 ON p1.email = p2.email AND p1.id > p2.id;
 
+--OR THIS (for selecting the non-duplicated emails)--
+
+SELECT *
+FROM Person p1
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Person p2
+    WHERE p2.email = p1.email AND p2.id < p1.id
+)
+
+--OR THIS(for selecting the non-duplicated emails)--
+
+SELECT p1.*
+FROM Person p1
+LEFT JOIN Person p2
+    ON p1.email = p2.email
+   AND p2.id < p1.id
+WHERE p2.id IS NULL;
 
 -- ============================================================
 -- THOUGHT PROCESS
