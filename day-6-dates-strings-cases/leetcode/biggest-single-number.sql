@@ -88,6 +88,14 @@ FROM (
     HAVING COUNT(*) = 1
 ) t;
 
+WITH counted AS (
+    SELECT num, COUNT(*) OVER (PARTITION BY num) as cnt
+    FROM MyNumbers
+)
+SELECT MAX(num) as num
+FROM counted 
+WHERE cnt =1
+
 -- ============================================================
 -- THOUGHT PROCESS
 -- ============================================================
